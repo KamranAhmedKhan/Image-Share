@@ -1,6 +1,9 @@
 package com.crystalnet.imageshare.Fragments;
 
 
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.design.widget.FloatingActionButton;
@@ -12,12 +15,19 @@ import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+import com.crystalnet.imageshare.Handlers.CloudinaryHandler;
 import com.crystalnet.imageshare.ListAdapter;
 import com.crystalnet.imageshare.Model.Post;
 import com.crystalnet.imageshare.R;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -95,6 +105,25 @@ public class HomeFragment extends Fragment {
         ArrayList<Post> postArrayList = new ArrayList<Post>();
         postArrayList.add(Post.dummyPost);
         postArrayList.add(Post.dummyPost);
+
+//        Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.aa);
+        Cloudinary cloudinary = new Cloudinary("cloudinary://573468729839527:k8qo3_8Ex_kPh-M9qkB8BJ3BxyQ@kamran");
+//        try {
+//
+//            cloudinary.uploader().unsignedUpload("sample.jpg", "unsigned_1",
+//                    ObjectUtils.asMap("cloud_name", "kamran"));
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        try {
+            Map uploadResult = cloudinary.uploader().upload("http://i.imgur.com/AITuone.png",ObjectUtils.emptyMap());
+            Toast.makeText(getActivity(),(String)uploadResult.get("public_id"),Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
         adapter = new ListAdapter(getActivity(), 0, postArrayList);
         listView.setAdapter(adapter);
 
