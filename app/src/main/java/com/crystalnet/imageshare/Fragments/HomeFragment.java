@@ -1,6 +1,9 @@
 package com.crystalnet.imageshare.Fragments;
 
 
+import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,9 +26,15 @@ import com.crystalnet.imageshare.Handlers.CloudinaryHandler;
 import com.crystalnet.imageshare.ListAdapter;
 import com.crystalnet.imageshare.Model.Post;
 import com.crystalnet.imageshare.R;
+import com.crystalnet.imageshare.Utils.Utilities;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -79,6 +88,7 @@ public class HomeFragment extends Fragment {
     View V;
     ListView listView;
     ListAdapter adapter;
+    String result;Map uploadResult;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -93,8 +103,11 @@ public class HomeFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+
+                Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(intent, 0);
             }
         });
         return V;
@@ -106,22 +119,39 @@ public class HomeFragment extends Fragment {
         postArrayList.add(Post.dummyPost);
         postArrayList.add(Post.dummyPost);
 
-//        Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.aa);
-        Cloudinary cloudinary = new Cloudinary("cloudinary://573468729839527:k8qo3_8Ex_kPh-M9qkB8BJ3BxyQ@kamran");
-//        try {
+
+        /*final Cloudinary cloudinary = new Cloudinary("cloudinary://573468729839527:k8qo3_8Ex_kPh-M9qkB8BJ3BxyQ@kamran");
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    //uploadResult = cloudinary.uploader().upload("http://i.imgur.com/AITuone.png",ObjectUtils.emptyMap());//its working
+                    @SuppressWarnings("ResourceType")
+                    InputStream ins = getResources().openRawResource(R.drawable.aa);
+//                    BufferedReader br = new BufferedReader(new InputStreamReader(ins));
+//                    StringBuffer sb;
+//                    String line;
+//                    while((line = br.readLine()) != null){
+//                        sb.append(line);
+//                    }
 //
-//            cloudinary.uploader().unsignedUpload("sample.jpg", "unsigned_1",
-//                    ObjectUtils.asMap("cloud_name", "kamran"));
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-        try {
-            Map uploadResult = cloudinary.uploader().upload("http://i.imgur.com/AITuone.png",ObjectUtils.emptyMap());
-            Toast.makeText(getActivity(),(String)uploadResult.get("public_id"),Toast.LENGTH_SHORT).show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//                    File f = new File(sb.toString());
+
+                    uploadResult = cloudinary.uploader().upload(ins,ObjectUtils.emptyMap());
+                    result = uploadResult.get("public_id").toString();
+                    listView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getActivity(),(String)uploadResult.get("public_id"),Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Utilities.successToast(e.toString());
+                }
+            }
+        }).start();*/
+
+
 
 
         adapter = new ListAdapter(getActivity(), 0, postArrayList);
@@ -134,5 +164,24 @@ public class HomeFragment extends Fragment {
                         p.*/
             }
         });
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // TODO Auto-generated method stub
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode== Activity.RESULT_OK){
+            Bitmap bp = (Bitmap) data.getExtras().get("data");
+            adapter.add(Post.dummyPost);
+//            File file = new File(BitmapFactory.);
+            try {
+                InputStream inputStream = getActivity().getContentResolver().openInputStream(data.getData());
+                if(inputStream==null)Toast.makeText(getActivity(), "input stream in null", Toast.LENGTH_SHORT).show();
+                //There will saving inpustream to cloudinary
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            Toast.makeText(getActivity(), "Picture Saved", Toast.LENGTH_SHORT).show();
+        }
+//        iv.setImageBitmap(bp);
     }
 }
