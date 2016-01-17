@@ -23,8 +23,10 @@ import android.widget.Toast;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.crystalnet.imageshare.Handlers.CloudinaryHandler;
+import com.crystalnet.imageshare.Handlers.FirebaseHandler;
 import com.crystalnet.imageshare.ListAdapter;
 import com.crystalnet.imageshare.Model.Post;
+import com.crystalnet.imageshare.Model.User;
 import com.crystalnet.imageshare.R;
 import com.crystalnet.imageshare.Utils.Utilities;
 
@@ -97,7 +99,9 @@ public class HomeFragment extends Fragment {
         V = inflater.inflate(R.layout.fragment_home, container, false);
 
         initWidgets(V);
-
+        User user = FirebaseHandler.getInstance().getLoginedUser();
+        Utilities.successToast("Name: " + user.getName()+
+                ", Email: "+user.getEmail()+", Image: "+user.getImage());
 
         FloatingActionButton fab = (FloatingActionButton) V.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

@@ -1,8 +1,11 @@
 package com.crystalnet.imageshare.Model;
 
+import com.shaded.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * Created by root on 05/01/16.
  */
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class User {
     String Name;
     String Email;

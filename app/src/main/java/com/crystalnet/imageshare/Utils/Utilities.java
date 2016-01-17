@@ -6,17 +6,18 @@ import android.widget.Toast;
 
 import android.content.Context;
 
+import com.crystalnet.imageshare.Activities.MainActivity;
+
 /**
  * Created by root on 05/01/16.
  */
 public class Utilities {
     public static String FirebaseTAG = "Firebase";
-static Application a = new Application();
     public static void successToast(String msg){
-        Toast.makeText(a.getApplicationContext(),msg,Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.context,msg,Toast.LENGTH_SHORT).show();
     }
 
-    public static void errorToast(Context context, String msg){
-        Toast.makeText(context,msg,Toast.LENGTH_SHORT).show();
+    public static void errorToast(String msg){
+        Toast.makeText(MainActivity.context,msg,Toast.LENGTH_SHORT).show();
     }
 }

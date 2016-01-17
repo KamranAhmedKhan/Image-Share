@@ -2,6 +2,8 @@ package com.crystalnet.imageshare.Handlers;
 
 import android.util.Log;
 
+import com.cloudinary.Util;
+import com.crystalnet.imageshare.Activities.MainActivity;
 import com.crystalnet.imageshare.Model.User;
 import com.crystalnet.imageshare.Utils.Utilities;
 import com.firebase.client.AuthData;
@@ -9,6 +11,8 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+
+import javax.security.auth.callback.Callback;
 
 
 /**
@@ -18,8 +22,8 @@ public class FirebaseHandler {
 
     private Firebase firebaseRef;
     private static FirebaseHandler ourInstance;
-    private static User user;
-    private AuthData authData = FirebaseHandler.getInstance().firebaseRef.getAuth();
+    private User user;
+//    private AuthData authData = FirebaseHandler.getInstance().firebaseRef.getAuth();
 
     public static FirebaseHandler getInstance() {
         if (ourInstance == null) {
@@ -31,34 +35,41 @@ public class FirebaseHandler {
     }
 
     private FirebaseHandler() {
-        firebaseRef = new Firebase("Firebase Url");
+        Firebase.setAndroidContext(MainActivity.context);
+        firebaseRef = new Firebase("https://fb-todolist.firebaseio.com/");
     }
 
-    private boolean getAuthStatus() {
-        if (authData != null) {
-            Log.i(Utilities.FirebaseTAG, "FB Handler - User Already authenticated..");
-            return true;
-        }
-        else
-            Log.i(Utilities.FirebaseTAG, "FB Handler - Session Expired..");
-            return false;
-    }
+//    private boolean getAuthStatus() {
+//        if (authData != null) {
+//            Log.i(Utilities.FirebaseTAG, "FB Handler - User Already authenticated..");
+//            return true;
+//        }
+//        else
+//            Log.i(Utilities.FirebaseTAG, "FB Handler - Session Expired..");
+//            return false;
+//    }
 
-    private User getLoginedUser() {
-        if (this.user == null) {
-            FirebaseHandler.getInstance().firebaseRef.child("Users").child(authData.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+    public User getLoginedUser() {Log.e("Logined User: ","in");
+        if (user == null) {
+            FirebaseHandler.getInstance().firebaseRef.child("Users").child("c209a2d4-afa5-4f88-886a-38cafe74394d"/*authData.getUid()*/).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+                    Log.e("datasnapshot: ", dataSnapshot.toString());
+
                     user = dataSnapshot.getValue(User.class);
+                    Log.e("datasnapshot User: ", "Name: "+user.getName()+
+                    ", Email: "+user.getEmail()+", Image: "+user.getImage());
+//                    Utilities.successToast("Name: " + user.getName()+
+//                            ", Email: "+user.getEmail()+", Image: "+user.getImage());
                 }
 
                 @Override
                 public void onCancelled(FirebaseError firebaseError) {
-
+                    Utilities.errorToast(firebaseError.toString());
                 }
             });
         }
-        return user;
+        return this.user;
     }
 
     private void getPosts() {
