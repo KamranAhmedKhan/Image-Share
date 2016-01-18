@@ -5,6 +5,7 @@ import android.util.Log;
 import com.cloudinary.Util;
 import com.crystalnet.imageshare.Activities.MainActivity;
 import com.crystalnet.imageshare.Model.User;
+import com.crystalnet.imageshare.ServiceListener;
 import com.crystalnet.imageshare.Utils.Utilities;
 import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
@@ -49,7 +50,7 @@ public class FirebaseHandler {
 //            return false;
 //    }
 
-    public User getLoginedUser() {Log.e("Logined User: ","in");
+    public void getLoginedUser(final ServiceListener<User> listener) {Log.e("Logined User: ","in");
         if (user == null) {
             FirebaseHandler.getInstance().firebaseRef.child("Users").child("c209a2d4-afa5-4f88-886a-38cafe74394d"/*authData.getUid()*/).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -59,6 +60,7 @@ public class FirebaseHandler {
                     user = dataSnapshot.getValue(User.class);
                     Log.e("datasnapshot User: ", "Name: "+user.getName()+
                     ", Email: "+user.getEmail()+", Image: "+user.getImage());
+                    listener.success(user);
 //                    Utilities.successToast("Name: " + user.getName()+
 //                            ", Email: "+user.getEmail()+", Image: "+user.getImage());
                 }
@@ -68,8 +70,9 @@ public class FirebaseHandler {
                     Utilities.errorToast(firebaseError.toString());
                 }
             });
+        } else {
+            listener.success(user);
         }
-        return this.user;
     }
 
     private void getPosts() {

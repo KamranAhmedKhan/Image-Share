@@ -2,15 +2,27 @@ package com.crystalnet.imageshare.Fragments;
 
 
 import android.app.Activity;
+import android.app.FragmentManager;
+import android.content.ComponentName;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Environment;
+import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,23 +33,29 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.cloudinary.Cloudinary;
+import com.cloudinary.android.Utils;
 import com.cloudinary.utils.ObjectUtils;
+import com.crystalnet.imageshare.Activities.MainActivity;
 import com.crystalnet.imageshare.Handlers.CloudinaryHandler;
 import com.crystalnet.imageshare.Handlers.FirebaseHandler;
 import com.crystalnet.imageshare.ListAdapter;
 import com.crystalnet.imageshare.Model.Post;
 import com.crystalnet.imageshare.Model.User;
 import com.crystalnet.imageshare.R;
+import com.crystalnet.imageshare.ServiceListener;
 import com.crystalnet.imageshare.Utils.Utilities;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -54,6 +72,7 @@ public class HomeFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private int PICK_IMAGE = 1;Uri outputFileUri;
 
 
     /**
@@ -91,6 +110,7 @@ public class HomeFragment extends Fragment {
     ListView listView;
     ListAdapter adapter;
     String result;Map uploadResult;
+    User user;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -99,9 +119,18 @@ public class HomeFragment extends Fragment {
         V = inflater.inflate(R.layout.fragment_home, container, false);
 
         initWidgets(V);
-        User user = FirebaseHandler.getInstance().getLoginedUser();
-        Utilities.successToast("Name: " + user.getName()+
-                ", Email: "+user.getEmail()+", Image: "+user.getImage());
+        FirebaseHandler.getInstance().getLoginedUser(new ServiceListener<User>() {
+            @Override
+            public void success(User obj) {
+                user = obj;
+                dowork();
+            }
+
+            @Override
+            public void error() {
+
+            }
+        });
 
         FloatingActionButton fab = (FloatingActionButton) V.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -109,13 +138,23 @@ public class HomeFragment extends Fragment {
             public void onClick(View view) {
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
-
-                Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent, 0);
+//                Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+//                startActivityForResult(intent, 0);
+                // Determine Uri of camera image to save.
+                FragmentManager fm = getFragmentManager();
+                fm.beginTransaction().replace(R.id.container, new NewPostFragment()).addToBackStack(null).commit();
             }
         });
         return V;
     }
+
+    public void dowork(){
+        Utilities.successToast("Name: " + user.getName()+
+                ", Email: "+user.getEmail()+", Image: "+user.getImage());
+
+    }
+
+
 
     private void initWidgets(View v) {
         listView = (ListView) v.findViewById(R.id.listView);
@@ -170,22 +209,13 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // TODO Auto-generated method stub
-        super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode== Activity.RESULT_OK){
-            Bitmap bp = (Bitmap) data.getExtras().get("data");
-            adapter.add(Post.dummyPost);
-//            File file = new File(BitmapFactory.);
-            try {
-                InputStream inputStream = getActivity().getContentResolver().openInputStream(data.getData());
-                if(inputStream==null)Toast.makeText(getActivity(), "input stream in null", Toast.LENGTH_SHORT).show();
-                //There will saving inpustream to cloudinary
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            Toast.makeText(getActivity(), "Picture Saved", Toast.LENGTH_SHORT).show();
-        }
-//        iv.setImageBitmap(bp);
+    public String getPath(Uri uri, Activity activity) {
+        String[] projection = { MediaStore.MediaColumns.DATA };
+        Cursor cursor = activity
+                .managedQuery(uri, projection, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
     }
+
 }
