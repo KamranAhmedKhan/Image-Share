@@ -24,6 +24,7 @@ public class FirebaseHandler {
     private Firebase firebaseRef;
     private static FirebaseHandler ourInstance;
     private User user;
+    private String tempLoginedID = "c209a2d4-afa5-4f88-886a-38cafe74394d";
 //    private AuthData authData = FirebaseHandler.getInstance().firebaseRef.getAuth();
 
     public static FirebaseHandler getInstance() {
@@ -52,30 +53,67 @@ public class FirebaseHandler {
 
     public void getLoginedUser(final ServiceListener<User> listener) {Log.e("Logined User: ","in");
         if (user == null) {
-            FirebaseHandler.getInstance().firebaseRef.child("Users").child("c209a2d4-afa5-4f88-886a-38cafe74394d"/*authData.getUid()*/).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    Log.e("datasnapshot: ", dataSnapshot.toString());
+            FirebaseHandler.getInstance().firebaseRef.child("Users")
+                    .child(tempLoginedID/*authData.getUid()*/)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            Log.e("datasnapshot: ", dataSnapshot.toString());
 
-                    user = dataSnapshot.getValue(User.class);
-                    Log.e("datasnapshot User: ", "Name: "+user.getName()+
-                    ", Email: "+user.getEmail()+", Image: "+user.getImage());
-                    listener.success(user);
+                            user = dataSnapshot.getValue(User.class);
+                            Log.e("datasnapshot User: ", "Name: " + user.getName() +
+                                    ", Email: " + user.getEmail() + ", Image: " + user.getImage());
+                            listener.success(user);
 //                    Utilities.successToast("Name: " + user.getName()+
 //                            ", Email: "+user.getEmail()+", Image: "+user.getImage());
-                }
+                        }
 
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {
-                    Utilities.errorToast(firebaseError.toString());
-                }
-            });
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+                            Utilities.errorToast(firebaseError.toString());
+                        }
+                    });
         } else {
             listener.success(user);
         }
     }
 
+    public Firebase getLoginedUserNode(){
+        return FirebaseHandler.getInstance().firebaseRef.child("Users")
+                .child(tempLoginedID/*authData.getUid()*/);
+    }
+
+
     private void getPosts() {
         //returning the posts array list
+        /*firebase.child("Wall").child(firebase.getAuth().getUid()).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+                list.add(dataSnapshot.getValue(Post.class));
+                ca.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });*/
+
     }
 }
