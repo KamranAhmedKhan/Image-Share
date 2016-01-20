@@ -38,6 +38,7 @@ public class FirebaseHandler {
 
     private FirebaseHandler() {
         Firebase.setAndroidContext(MainActivity.context);
+        Firebase.getDefaultConfig().setPersistenceEnabled(true);
         firebaseRef = new Firebase("https://fb-todolist.firebaseio.com/");
     }
 
