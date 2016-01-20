@@ -2,6 +2,8 @@ package com.crystalnet.imageshare.Model;
 
 import android.util.Base64;
 
+import com.shaded.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;

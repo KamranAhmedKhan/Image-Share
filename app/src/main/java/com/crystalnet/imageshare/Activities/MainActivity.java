@@ -17,6 +17,7 @@ import android.view.MenuItem;
 
 import com.crystalnet.imageshare.Fragments.HomeFragment;
 import com.crystalnet.imageshare.Fragments.MyProfileFragment;
+import com.crystalnet.imageshare.Fragments.SigninFragment;
 import com.crystalnet.imageshare.R;
 
 public class MainActivity extends AppCompatActivity
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity
 
 
         FragmentManager fm = getFragmentManager();
-        fm.beginTransaction().add(R.id.container, new HomeFragment()).commit();
+        fm.beginTransaction().add(R.id.container, new SigninFragment()).addToBackStack(null).commit();
     }
 
     private void toolbar() {
@@ -51,13 +52,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onBackPressed() {
+    public void onBackPressed() {getSupportFragmentManager().popBackStack();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
+
     }
 
     @Override

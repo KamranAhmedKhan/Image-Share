@@ -23,13 +23,16 @@ import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cloudinary.Cloudinary;
@@ -44,6 +47,7 @@ import com.crystalnet.imageshare.Model.User;
 import com.crystalnet.imageshare.R;
 import com.crystalnet.imageshare.ServiceListener;
 import com.crystalnet.imageshare.Utils.Utilities;
+import com.firebase.client.FirebaseError;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -107,6 +111,7 @@ public class HomeFragment extends Fragment {
     }
 
     View V;
+    ArrayList<Post> list;
     ListView listView;
     ListAdapter adapter;
     String result;Map uploadResult;
@@ -119,18 +124,6 @@ public class HomeFragment extends Fragment {
         V = inflater.inflate(R.layout.fragment_home, container, false);
 
         initWidgets(V);
-        FirebaseHandler.getInstance().getLoginedUser(new ServiceListener<User>() {
-            @Override
-            public void success(User obj) {
-                user = obj;
-                dowork();
-            }
-
-            @Override
-            public void error() {
-
-            }
-        });
 
         FloatingActionButton fab = (FloatingActionButton) V.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -145,22 +138,31 @@ public class HomeFragment extends Fragment {
                 fm.beginTransaction().replace(R.id.container, new NewPostFragment()).addToBackStack(null).commit();
             }
         });
+
+        FirebaseHandler.getInstance().getPosts(new ServiceListener<Post, FirebaseError>() {
+            @Override
+            public void success(Post obj) {
+                list.add(obj);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void error(FirebaseError obj) {
+                Utilities.errorToast("Feed Fetching Error: "+obj.getMessage());
+            }
+        });
         return V;
     }
 
-    public void dowork(){
-        Utilities.successToast("Name: " + user.getName()+
-                ", Email: "+user.getEmail()+", Image: "+user.getImage());
-
-    }
 
 
 
     private void initWidgets(View v) {
         listView = (ListView) v.findViewById(R.id.listView);
-        ArrayList<Post> postArrayList = new ArrayList<Post>();
-        postArrayList.add(Post.dummyPost);
-        postArrayList.add(Post.dummyPost);
+        list = new ArrayList<Post>();
+//        ArrayList<Post> postArrayList = new ArrayList<Post>();
+//        postArrayList.add(Post.dummyPost);
+//        postArrayList.add(Post.dummyPost);
 
 
         /*final Cloudinary cloudinary = new Cloudinary("cloudinary://573468729839527:k8qo3_8Ex_kPh-M9qkB8BJ3BxyQ@kamran");
@@ -195,16 +197,26 @@ public class HomeFragment extends Fragment {
         }).start();*/
 
 
-
-
-        adapter = new ListAdapter(getActivity(), 0, postArrayList);
+        adapter = new ListAdapter(getActivity(), 0, list);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                /*Post p = (Post)parent.getItemAtPosition(position);
-                        p.*/
+                Post p = (Post)parent.getItemAtPosition(position);
+                Utilities.successToast(position+"");
+//final TextView s = (TextView)listView.getChildAt(position).findViewById(R.id.post_msg);
+//                Button mButton = (Button) view.findViewById(R.id.share);
+//                mButton.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        Utilities.successToast(s.getText().toString());
+//                    }
+//                });
+
+                Log.d("position",""+position);
+
+
             }
         });
     }

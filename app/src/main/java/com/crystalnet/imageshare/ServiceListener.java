@@ -3,8 +3,8 @@ package com.crystalnet.imageshare;
 /**
  * Created by panacloud on 1/18/16.
  */
-public interface ServiceListener<T> {
+public interface ServiceListener<S,E> {
 
-    void success(T obj);
-    void error();
+    void success(S obj);
+    void error(E obj);
 }
