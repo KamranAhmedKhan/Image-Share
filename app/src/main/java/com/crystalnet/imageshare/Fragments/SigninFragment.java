@@ -56,6 +56,18 @@ public class SigninFragment extends Fragment {
         Root = inflater.inflate(R.layout.fragment_signin, container, false);
         uiInit(Root);
 
+        //Monitoring Firebase Authentication
+        if (FirebaseHandler.getInstance().getAuthStatus()) {
+            // user is logged in
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.container, new HomeFragment())
+                    .commit();
+                }else{
+                    signin();
+                    signup();
+                }
+
+
         FirebaseHandler.getInstance().getLoginedUser(new ServiceListener<User,FirebaseError>() {
             @Override
             public void success(User obj) {
@@ -68,18 +80,6 @@ public class SigninFragment extends Fragment {
                 Utilities.errorToast(firebaseError.toString());
             }
         });
-
-        //Monitoring Firebase Authentication
-        if (FirebaseHandler.getInstance().getAuthStatus()) {
-            // user is logged in
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.container, new HomeFragment())
-                    .commit();
-                }else{
-                    signin();
-                    signup();
-                }
-
         return Root;
     }
 

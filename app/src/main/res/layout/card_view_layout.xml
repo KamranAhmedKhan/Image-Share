@@ -13,7 +13,7 @@
         <ImageView
             android:layout_width="50dp"
             android:layout_height="match_parent"
-            android:id="@+id/post_imageView"
+            android:id="@+id/post_profileImageView"
             android:background="@android:color/black"
             android:layout_margin="5dp"/>
 <LinearLayout
@@ -58,6 +58,7 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:background="@android:color/black"
+        android:id="@+id/post_imageView"
         />
 
     <TextView

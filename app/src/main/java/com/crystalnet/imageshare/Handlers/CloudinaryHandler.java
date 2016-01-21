@@ -25,10 +25,13 @@ import android.os.Looper;
 import android.os.UserHandle;
 import android.support.annotation.Nullable;
 import android.view.Display;
+import android.widget.ImageView;
 
 import com.cloudinary.*;
 import com.cloudinary.utils.ObjectUtils;
 import com.crystalnet.imageshare.R;
+import com.crystalnet.imageshare.Utils.Utilities;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -17,6 +17,7 @@ import android.view.MenuItem;
 
 import com.crystalnet.imageshare.Fragments.HomeFragment;
 import com.crystalnet.imageshare.Fragments.MyProfileFragment;
+import com.crystalnet.imageshare.Fragments.SearchFragment;
 import com.crystalnet.imageshare.Fragments.SigninFragment;
 import com.crystalnet.imageshare.R;
 
@@ -27,7 +28,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);context = MainActivity.this;
+        setContentView(R.layout.activity_main);
+        context = MainActivity.this;
         //Toolbar and Drawer Instance
         toolbar();
 
@@ -78,6 +80,7 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            getFragmentManager().beginTransaction().replace(R.id.container, new SearchFragment()).addToBackStack(null).commit();
             return true;
         }
 

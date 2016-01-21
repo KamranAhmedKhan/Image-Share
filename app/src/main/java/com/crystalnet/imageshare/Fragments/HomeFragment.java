@@ -31,6 +31,7 @@ import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -148,9 +149,11 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void error(FirebaseError obj) {
-                Utilities.errorToast("Feed Fetching Error: "+obj.getMessage());
+                Utilities.errorToast("Feed Fetching Error: " + obj.getMessage());
             }
         });
+
+        listViewListener();//extra func
         return V;
     }
 
@@ -200,25 +203,9 @@ public class HomeFragment extends Fragment {
         adapter = new ListAdapter(getActivity(), 0, list);
         listView.setAdapter(adapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Post p = (Post)parent.getItemAtPosition(position);
-                Utilities.successToast(position+"");
-//final TextView s = (TextView)listView.getChildAt(position).findViewById(R.id.post_msg);
-//                Button mButton = (Button) view.findViewById(R.id.share);
-//                mButton.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        Utilities.successToast(s.getText().toString());
-//                    }
-//                });
-
-                Log.d("position",""+position);
-
-
-            }
-        });
     }
 
+    private void listViewListener(){
+
+    }
 }
