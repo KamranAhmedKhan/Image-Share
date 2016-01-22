@@ -1,6 +1,7 @@
 package com.crystalnet.imageshare.Fragments;
 
 
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -89,8 +90,10 @@ public class SearchFragment extends Fragment {
         searchListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.e("User Id: ",ids.get(i));
-
+//                Log.e("User Id: ", ids.get(i));
+                ProfileViewFragment.id = ids.get(i);
+                FragmentManager fm = getFragmentManager();
+                fm.beginTransaction().replace(R.id.container, new ProfileViewFragment()).addToBackStack(null).commit();
             }
         });
 

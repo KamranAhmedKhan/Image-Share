@@ -1,11 +1,7 @@
 package com.crystalnet.imageshare.Handlers;
 
 import android.util.Log;
-import android.widget.Toast;
-
-import com.cloudinary.Util;
 import com.crystalnet.imageshare.Activities.MainActivity;
-import com.crystalnet.imageshare.Fragments.HomeFragment;
 import com.crystalnet.imageshare.Model.Post;
 import com.crystalnet.imageshare.Model.User;
 import com.crystalnet.imageshare.R;
@@ -75,9 +71,9 @@ public class FirebaseHandler {
         });
     }
 
-    public void getLoginedUser(final ServiceListener<User,FirebaseError> listener) {Log.e("Logined User: ", "in");
+    public void getLoginedUser(final ServiceListener<User,FirebaseError> listener) {
         if (user == null) {
-            FirebaseHandler.getInstance().firebaseRef.child("Users")
+            FirebaseHandler.firebaseRef.child("Users")
                     .child(authData.getUid())
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -101,14 +97,22 @@ public class FirebaseHandler {
             listener.success(user);
         }
     }
+    public Firebase getSearchedUserNode(String id){
+        return FirebaseHandler.firebaseRef.child("Users")
+                .child(id);
+    }
 
+    public Firebase getSearchedPostNode(String user,String post){
+        return FirebaseHandler.firebaseRef.child("Wall")
+                .child(user).child(post);
+    }
     public Firebase getLoginedUserNode(){
-        return FirebaseHandler.getInstance().firebaseRef.child("Users")
+        return FirebaseHandler.firebaseRef.child("Users")
                 .child(authData.getUid());
     }
 
     public Firebase getLoginedWallNode(){
-        return FirebaseHandler.getInstance().firebaseRef.child("Wall")
+        return FirebaseHandler.firebaseRef.child("Wall")
                 .child(authData.getUid());
     }
 
@@ -143,5 +147,27 @@ public class FirebaseHandler {
             }
         });
 
+    }
+
+    public void getUserById(String id, final ServiceListener<DataSnapshot,FirebaseError> listener) {
+
+            FirebaseHandler.firebaseRef.child("Users")
+                    .child(id)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            User searchedUser = dataSnapshot.getValue(User.class);
+                            Log.e("datasnapshot User: ", "Name: " + searchedUser.getName() +
+                                    ", Email: " + searchedUser.getEmail());
+
+                            listener.success(dataSnapshot);
+                        }
+
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+                            Utilities.errorToast(firebaseError.toString());
+                            listener.error(firebaseError);
+                        }
+                    });
     }
 }
