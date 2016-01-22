@@ -28,7 +28,7 @@ public class SearchListAdapter extends ArrayAdapter {
     LayoutInflater layoutInflater;
     User user;
 
-    public SearchListAdapter(Context context, int resource, ArrayList<User> objects) {
+    public SearchListAdapter(Context context, int resource, ArrayList<User> objects, ArrayList<String> ids) {
         super(context, resource, objects);
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }

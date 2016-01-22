@@ -68,18 +68,18 @@ public class SigninFragment extends Fragment {
                 }
 
 
-        FirebaseHandler.getInstance().getLoginedUser(new ServiceListener<User,FirebaseError>() {
-            @Override
-            public void success(User obj) {
-                user = obj;
-                dowork();
-            }
-
-            @Override
-            public void error(FirebaseError firebaseError) {
-                Utilities.errorToast(firebaseError.toString());
-            }
-        });
+//        FirebaseHandler.getInstance().getLoginedUser(new ServiceListener<User,FirebaseError>() {
+//            @Override
+//            public void success(User obj) {
+//                user = obj;
+//                dowork();
+//            }
+//
+//            @Override
+//            public void error(FirebaseError firebaseError) {
+//                Utilities.errorToast(firebaseError.toString());
+//            }
+//        });
         return Root;
     }
 
