@@ -8,6 +8,10 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/searchEditText"
+        android:visibility="gone"
+        android:drawableRight="@android:drawable/ic_menu_search"
+        android:hint="Search.."
         android:contentDescription="Search"/>
 
     <ListView

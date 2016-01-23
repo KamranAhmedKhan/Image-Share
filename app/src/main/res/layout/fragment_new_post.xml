@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="10dp"
+        android:maxHeight="300dp"
         android:background="@android:color/darker_gray"
         android:src="@mipmap/ic_launcher" />
 

@@ -4,13 +4,18 @@ package com.crystalnet.imageshare.Fragments;
 import android.app.FragmentManager;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.crystalnet.imageshare.Activities.MainActivity;
 import com.crystalnet.imageshare.Handlers.FirebaseHandler;
 import com.crystalnet.imageshare.Model.User;
 import com.crystalnet.imageshare.R;
@@ -33,6 +38,7 @@ public class SearchFragment extends Fragment {
     SearchListAdapter adapter;
     ArrayList<User> list;
     ArrayList<String> ids;
+    private EditText inputSearch;
 
 
     public SearchFragment() {
@@ -51,11 +57,33 @@ public class SearchFragment extends Fragment {
     }
 
     private void init() {
+        inputSearch = (EditText)V.findViewById(R.id.searchEditText);
         searchListView = (ListView) V.findViewById(R.id.searchListView);
         list = new ArrayList<User>();
         ids = new ArrayList<String>();
         adapter = new SearchListAdapter(getActivity(), 0, list, ids);
         searchListView.setAdapter(adapter);
+
+        inputSearch.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
+                // When user changed the Text
+                adapter.getFilter().filter(cs);
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                          int arg3) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                // TODO Auto-generated method stub
+            }
+        });
 
         FirebaseHandler.firebaseRef.child("Users").addChildEventListener(new ChildEventListener() {
             @Override

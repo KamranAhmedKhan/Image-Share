@@ -63,6 +63,8 @@ public class SearchListAdapter extends ArrayAdapter {
         return convertView;
     }
 
+
+
     @Override
     public Object getItem(int position) {
         return super.getItem(position);

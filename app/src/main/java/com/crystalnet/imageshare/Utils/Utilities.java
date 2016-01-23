@@ -40,13 +40,13 @@ public class Utilities {
         Picasso.with(Utilities.context).load(url).into(imageView);
     }
 
-    private String Time(){
+    public static String Time(){
         DateFormat df = new SimpleDateFormat("HH:mm:ss");
         Date dateobj = new Date();
         return df.format(dateobj);
     }
 
-    private String Date(){
+    public static String Date(){
         DateFormat df = new SimpleDateFormat("dd/MM/yy");
         Date dateobj = new Date();
         return df.format(dateobj);

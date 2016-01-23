@@ -140,6 +140,20 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        listViewListener();//extra func
+        return V;
+    }
+
+
+
+
+    private void initWidgets(View v) {
+        listView = (ListView) v.findViewById(R.id.listView);
+        list = new ArrayList<Post>();
+        adapter = new ListAdapter(getActivity(), 0, list);
+        listView.setAdapter(adapter);
+
+
         FirebaseHandler.getInstance().getPosts(new ServiceListener<Post, FirebaseError>() {
             @Override
             public void success(Post obj) {
@@ -152,56 +166,6 @@ public class HomeFragment extends Fragment {
                 Utilities.errorToast("Feed Fetching Error: " + obj.getMessage());
             }
         });
-
-        listViewListener();//extra func
-        return V;
-    }
-
-
-
-
-    private void initWidgets(View v) {
-        listView = (ListView) v.findViewById(R.id.listView);
-        list = new ArrayList<Post>();
-//        ArrayList<Post> postArrayList = new ArrayList<Post>();
-//        postArrayList.add(Post.dummyPost);
-//        postArrayList.add(Post.dummyPost);
-
-
-        /*final Cloudinary cloudinary = new Cloudinary("cloudinary://573468729839527:k8qo3_8Ex_kPh-M9qkB8BJ3BxyQ@kamran");
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    //uploadResult = cloudinary.uploader().upload("http://i.imgur.com/AITuone.png",ObjectUtils.emptyMap());//its working
-                    @SuppressWarnings("ResourceType")
-                    InputStream ins = getResources().openRawResource(R.drawable.aa);
-//                    BufferedReader br = new BufferedReader(new InputStreamReader(ins));
-//                    StringBuffer sb;
-//                    String line;
-//                    while((line = br.readLine()) != null){
-//                        sb.append(line);
-//                    }
-//
-//                    File f = new File(sb.toString());
-
-                    uploadResult = cloudinary.uploader().upload(ins,ObjectUtils.emptyMap());
-                    result = uploadResult.get("public_id").toString();
-                    listView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getActivity(),(String)uploadResult.get("public_id"),Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Utilities.successToast(e.toString());
-                }
-            }
-        }).start();*/
-
-
-        adapter = new ListAdapter(getActivity(), 0, list);
-        listView.setAdapter(adapter);
 
     }
 

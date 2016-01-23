@@ -30,14 +30,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class NewPostFragment extends Fragment {
 
     ImageView pickImageView;
     Button publish;
-    EditText desc;
+    public static EditText desc;String picturePath;
 
     public NewPostFragment() {
         // Required empty public constructor
@@ -59,7 +56,49 @@ public class NewPostFragment extends Fragment {
     }
 
     private void PublishButton() {
-        ((BitmapDrawable) (pickImageView.getDrawable())).getBitmap();
+//        ((BitmapDrawable) (pickImageView.getDrawable())).getBitmap();
+        publish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Async async = new Async();
+                async.execute(picturePath);
+                getFragmentManager().popBackStack();
+            }
+        });
+
+
+        /*final Cloudinary cloudinary = new Cloudinary("cloudinary://573468729839527:k8qo3_8Ex_kPh-M9qkB8BJ3BxyQ@kamran");
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    //uploadResult = cloudinary.uploader().upload("http://i.imgur.com/AITuone.png",ObjectUtils.emptyMap());//its working
+                    @SuppressWarnings("ResourceType")
+                    InputStream ins = getResources().openRawResource(R.drawable.aa);
+//                    BufferedReader br = new BufferedReader(new InputStreamReader(ins));
+//                    StringBuffer sb;
+//                    String line;
+//                    while((line = br.readLine()) != null){
+//                        sb.append(line);
+//                    }
+//
+//                    File f = new File(sb.toString());
+
+                    uploadResult = cloudinary.uploader().upload(ins,ObjectUtils.emptyMap());
+                    result = uploadResult.get("public_id").toString();
+                    listView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getActivity(),(String)uploadResult.get("public_id"),Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Utilities.successToast(e.toString());
+                }
+            }
+        }).start();*/
+
+
     }
 
     private void init(View v) {
@@ -126,7 +165,15 @@ public class NewPostFragment extends Fragment {
                 if (bp != null)
                     pickImageView.setImageBitmap(bp);
                 Log.i("Image Picker", "Got Camera image");
-                Utilities.successToast("Got Camera image");
+                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                Cursor cursor = getActivity().getContentResolver().query(data.getData(),
+                        filePathColumn, null, null, null);
+                cursor.moveToFirst();
+
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+
+                picturePath = cursor.getString(columnIndex);
+                cursor.close();
 //                File f = new File(Environment.getExternalStorageDirectory()
 //                        .toString());
 //                for (File temp : f.listFiles()) {
@@ -190,10 +237,11 @@ public class NewPostFragment extends Fragment {
                     cursor.moveToFirst();
 
                     int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                    String picturePath = cursor.getString(columnIndex);
+
+                    picturePath = cursor.getString(columnIndex);
                     cursor.close();
 
-pickImageView.setImageURI(selectedImageUri);
+                    pickImageView.setImageURI(selectedImageUri);
 //                Toast.makeText(getActivity(), "File Path=> " + picturePath, Toast.LENGTH_SHORT).show();
 
                    /* //This will be un-comment when saving to cloudinary

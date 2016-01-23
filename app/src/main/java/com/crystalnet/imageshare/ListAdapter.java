@@ -22,6 +22,7 @@ import com.crystalnet.imageshare.Fragments.SigninFragment;
 import com.crystalnet.imageshare.Handlers.CloudinaryHandler;
 import com.crystalnet.imageshare.Model.Post;
 import com.crystalnet.imageshare.Utils.Utilities;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,10 +72,9 @@ public class ListAdapter extends ArrayAdapter {
             @Override
             public void onClick(View v) {
                 Post post = (Post) getItem(position);
+                ImagePreviewFragment.post=post;
                 ((FragmentActivity) Utilities.context).getFragmentManager().beginTransaction()
                         .replace(R.id.container, new ImagePreviewFragment()).addToBackStack(null).commit();
-                ImagePreviewFragment.post=post;
-
 
             }
         });
