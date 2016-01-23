@@ -1,11 +1,12 @@
 package com.crystalnet.imageshare.Activities;
 
+import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.View;
+import android.util.Log;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -14,17 +15,38 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.crystalnet.imageshare.Fragments.HomeFragment;
-import com.crystalnet.imageshare.Fragments.MyProfileFragment;
+import com.crystalnet.imageshare.Fragments.NewPostFragment;
 import com.crystalnet.imageshare.Fragments.SearchFragment;
 import com.crystalnet.imageshare.Fragments.SigninFragment;
+import com.crystalnet.imageshare.Handlers.FirebaseHandler;
+import com.crystalnet.imageshare.Model.User;
 import com.crystalnet.imageshare.R;
+import com.crystalnet.imageshare.ServiceListener;
+import com.crystalnet.imageshare.Utils.Utilities;
+import com.firebase.client.FirebaseError;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public static Context context;
+    public TextView d_nameTextView;
+    public ImageView d_imageView;
+    public TextView d_emailTextView;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
+    private TextView d_detailsTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,10 +54,27 @@ public class MainActivity extends AppCompatActivity
         context = MainActivity.this;
         //Toolbar and Drawer Instance
         toolbar();
+        FirebaseHandler.getInstance().getLoginedUser(new ServiceListener<User, FirebaseError>() {
+            @Override
+            public void success(User obj) {
+                Log.e("Check: ", obj.getName());
+                Utilities.renderImage(obj.getImage(), d_imageView);
+                d_nameTextView.setText(obj.getName());
+                d_emailTextView.setText(obj.getEmail());
+                d_detailsTextView.setText(obj.getAbout());
+            }
 
+            @Override
+            public void error(FirebaseError obj) {
+                Log.e("Drawer: ", obj.toString());
+            }
+        });///
 
         FragmentManager fm = getFragmentManager();
         fm.beginTransaction().add(R.id.container, new SigninFragment()).addToBackStack(null).commit();
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     private void toolbar() {
@@ -51,6 +90,13 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        View headerView = navigationView.inflateHeaderView(R.layout.nav_header_main);
+        //Drawer Views code
+        d_imageView = (ImageView) headerView.findViewById(R.id.d_imageView);
+        d_nameTextView = (TextView) headerView.findViewById(R.id.d_nameTextView);
+        d_emailTextView = (TextView) headerView.findViewById(R.id.d_emailTextView);
+        d_detailsTextView = (TextView) headerView.findViewById(R.id.d_detailsTextView);
     }
 
     @Override
@@ -80,7 +126,6 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            getFragmentManager().beginTransaction().replace(R.id.container, new SearchFragment()).addToBackStack(null).commit();
             return true;
         }
 
@@ -93,22 +138,55 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camara) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        if (id == R.id.home) {
+            getFragmentManager().beginTransaction().replace(R.id.container, new HomeFragment()).addToBackStack(null).commit();
+        }else if (id == R.id.newPost) {
+            getFragmentManager().beginTransaction().replace(R.id.container, new NewPostFragment()).addToBackStack(null).commit();
+        }else if (id == R.id.addContact) {
+            getFragmentManager().beginTransaction().replace(R.id.container, new SearchFragment()).addToBackStack(null).commit();
+        } else if (id == R.id.settings) {
+            Utilities.successToast("Settings soon available");
+        } else if (id == R.id.logout) {
+            Logout();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+
+    public void Logout() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                MainActivity.this);
+
+        // set title
+        alertDialogBuilder.setTitle("Logout");
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage("You want to Logout!")
+                .setCancelable(false)
+                .setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        FirebaseHandler.firebaseRef.unauth();
+                        getFragmentManager().beginTransaction()
+                                .replace(R.id.container, new SigninFragment())
+                                .commit();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // if this button is clicked, just close
+                        // the dialog box and do nothing
+                        dialog.cancel();
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
     }
 }

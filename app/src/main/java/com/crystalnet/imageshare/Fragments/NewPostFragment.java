@@ -120,11 +120,12 @@ public class NewPostFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int item) {
                         if (items[item].equals("Take Photo")) {
-                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//                            File f = new File(android.os.Environment
-//                                    .getExternalStorageDirectory(), "temp.jpg");
-//                            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-                            startActivityForResult(intent, 0);
+                            Utilities.errorToast("Camera Temporary Unavailable!");
+//                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+////                            File f = new File(android.os.Environment
+////                                    .getExternalStorageDirectory(), "temp.jpg");
+////                            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+//                            startActivityForResult(intent, 0);
                         } else if (items[item].equals("Choose from Library")) {
                             Intent intent = new Intent(
                                     Intent.ACTION_PICK,
