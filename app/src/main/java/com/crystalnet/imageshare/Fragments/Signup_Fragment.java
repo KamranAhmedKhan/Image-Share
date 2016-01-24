@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crystalnet.imageshare.Activities.MainActivity;
 import com.crystalnet.imageshare.R;
 import com.crystalnet.imageshare.Utils.Utilities;
 import com.firebase.client.AuthData;
@@ -144,4 +145,15 @@ public class Signup_Fragment extends Fragment {
         public void onFragmentInteraction(Uri uri);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        MainActivity.toolbar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        MainActivity.toolbar.setVisibility(View.VISIBLE);
+    }
 }

@@ -31,15 +31,15 @@ public class ProfileGridAdapter extends ArrayAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = layoutInflater.inflate(R.layout.search_result_item, null);
+            convertView = layoutInflater.inflate(R.layout.grid_item, null);
         }
 
-        post_ImageView = (ImageView)convertView.findViewById(R.id.p_image);
+        post_ImageView = (ImageView) convertView.findViewById(R.id.p_image);
 
-//        post = (Post) getItem(position);
-Log.e("Grid: ",getItem(position)+"");
-        Utilities.renderImage(String.valueOf(getItem(position)), post_ImageView);
-notifyDataSetChanged();
+        String image = getItem(position).toString();
+        Log.e("Grid: ", image);
+        Utilities.renderImage(image, post_ImageView);
+
 //        post_imageView.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {

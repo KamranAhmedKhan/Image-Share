@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crystalnet.imageshare.Activities.MainActivity;
 import com.crystalnet.imageshare.Handlers.FirebaseHandler;
 import com.crystalnet.imageshare.Model.Post;
 import com.crystalnet.imageshare.Model.User;
@@ -29,6 +30,17 @@ public class SigninFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        MainActivity.toolbar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        MainActivity.toolbar.setVisibility(View.VISIBLE);
+    }
 
     public SigninFragment() {
         // Required empty public constructor
