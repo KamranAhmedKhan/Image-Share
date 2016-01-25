@@ -8,6 +8,6 @@
         android:id="@+id/p_image"
         android:layout_width="110dp"
         android:layout_height="110dp"
-        android:background="@android:color/black" />
+        android:background="@drawable/round_edge" />
 
 </LinearLayout>
