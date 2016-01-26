@@ -29,8 +29,9 @@
     <ImageView
         android:id="@+id/postImage"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:layout_gravity="center_horizontal"
+        android:maxHeight="380dp"
         android:layout_marginBottom="10dp"
         android:background="@android:color/black"
         android:src="@mipmap/ic_launcher" />
@@ -59,6 +60,7 @@
         android:textSize="16dp" />
         </LinearLayout>
     </ScrollView>
+
     <View android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="1dp"

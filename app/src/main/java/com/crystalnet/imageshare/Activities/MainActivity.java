@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity
         });///
 
         FragmentManager fm = getFragmentManager();
-        fm.beginTransaction().add(R.id.container, new SigninFragment()).addToBackStack(null).commit();
+        fm.beginTransaction().add(R.id.container, new SigninFragment()).commit();
     }
 
     private void toolbar() {
@@ -98,7 +98,11 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+
+
+            if(getFragmentManager().getBackStackEntryCount()==0)
+                super.onBackPressed();
+            else getFragmentManager().popBackStack();
         }
 
     }

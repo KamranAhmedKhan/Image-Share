@@ -22,6 +22,7 @@ import com.crystalnet.imageshare.ProfileGridAdapter;
 import com.crystalnet.imageshare.R;
 import com.crystalnet.imageshare.ServiceListener;
 import com.crystalnet.imageshare.Utils.Utilities;
+import com.firebase.client.AuthData;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.FirebaseError;
@@ -42,6 +43,8 @@ public class ProfileViewFragment extends Fragment {
     private TextView s_followers;
     GridView gridView;
     ProfileGridAdapter adapter;
+    AuthData authData = FirebaseHandler.getInstance().getAuthDataInstance();
+    String authUID = authData.getUid();
     private ArrayList<String> list;
     private Button follow_button;
     private String s_email;
@@ -118,13 +121,15 @@ public class ProfileViewFragment extends Fragment {
                         public void success(User obj) {
                             l_email = obj.getEmail();
                         }
+
                         @Override
                         public void error(FirebaseError obj) {
 
                         }
                     });
+
                     FirebaseHandler.getInstance().getSearchedUserNode(id).child("followers")
-                            .child(FirebaseHandler.firebaseRef.getAuth().getUid()).setValue(l_email);
+                            .child(authUID).setValue(l_email);
                 }
                 else if(follow_button.getText().toString().matches("Following")){
 
@@ -133,7 +138,7 @@ public class ProfileViewFragment extends Fragment {
                     Utilities.successToast("Now you are not Following");
 
                     FirebaseHandler.getInstance().getSearchedUserNode(id).child("followers")
-                            .child(FirebaseHandler.firebaseRef.getAuth().getUid()).setValue(null);
+                            .child(authUID).setValue(null);
                 }
             }
         });

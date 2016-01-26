@@ -53,6 +53,14 @@ public class FirebaseHandler {
             return false;
     }
 
+    public AuthData getAuthDataInstance(){
+        if(authData!=null){
+            return authData;
+        }else{
+        return authData = firebaseRef.getAuth();
+        }
+    }
+
     public void firebaseLogin(String email, String password, final ServiceListener<AuthData,FirebaseError> listener){
         firebaseRef.authWithPassword(email, password, new Firebase.AuthResultHandler() {
             @Override
