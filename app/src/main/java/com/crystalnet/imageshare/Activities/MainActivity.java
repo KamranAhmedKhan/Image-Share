@@ -50,24 +50,30 @@ public class MainActivity extends AppCompatActivity
         context = MainActivity.this;
         //Toolbar and Drawer Instance
         toolbar();
-        FirebaseHandler.getInstance().getLoginedUser(new ServiceListener<User, FirebaseError>() {
-            @Override
-            public void success(User obj) {
-                Log.e("Check: ", obj.getName());
-                Utilities.renderImage(obj.getImage(), d_imageView);
-                d_nameTextView.setText(obj.getName());
-                d_emailTextView.setText(obj.getEmail());
-                d_detailsTextView.setText(obj.getAbout());
-            }
 
-            @Override
-            public void error(FirebaseError obj) {
-                Log.e("Drawer: ", obj.toString());
-            }
-        });///
+        if (FirebaseHandler.getInstance().getAuthStatus()) {
+            // user is logged in
+            FirebaseHandler.getInstance().getLoginedUser(new ServiceListener<User, FirebaseError>() {
+                @Override
+                public void success(User obj) {
+                    Log.e("Check: ", obj.getName());
+                    Utilities.renderImage(obj.getImage(), d_imageView);
+                    d_nameTextView.setText(obj.getName());
+                    d_emailTextView.setText(obj.getEmail());
+                    d_detailsTextView.setText(obj.getAbout());
+                }
 
-        FragmentManager fm = getFragmentManager();
-        fm.beginTransaction().add(R.id.container, new SigninFragment()).commit();
+                @Override
+                public void error(FirebaseError obj) {
+                    Log.e("Drawer: ", obj.toString());
+                }
+            });
+            FragmentManager fm = getFragmentManager();
+            fm.beginTransaction().add(R.id.container, new SigninFragment()).commit();
+        }else{
+            FragmentManager fm = getFragmentManager();
+            fm.beginTransaction().add(R.id.container, new SigninFragment()).commit();
+        }
     }
 
     private void toolbar() {
@@ -97,13 +103,9 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-
-
-            if(getFragmentManager().getBackStackEntryCount()==0)
-                super.onBackPressed();
-            else getFragmentManager().popBackStack();
-        }
+        } else if(getFragmentManager().getBackStackEntryCount()==0)
+            super.onBackPressed();
+        else getFragmentManager().popBackStack();
 
     }
 
@@ -136,7 +138,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.home) {
-            getFragmentManager().beginTransaction().replace(R.id.container, new HomeFragment()).addToBackStack(null).commit();
+            getFragmentManager().beginTransaction().replace(R.id.container, new HomeFragment()).commit();
         }else if (id == R.id.newPost) {
             getFragmentManager().beginTransaction().replace(R.id.container, new NewPostFragment()).addToBackStack(null).commit();
         }else if (id == R.id.addContact) {

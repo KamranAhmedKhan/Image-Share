@@ -60,9 +60,12 @@ public class NewPostFragment extends Fragment {
         publish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Async async = new Async();
-                async.execute(picturePath);
-                getFragmentManager().popBackStack();
+                if(!desc.getText().toString().matches("")) {
+                    Async async = new Async();
+                    async.execute(picturePath);
+                    Utilities.successToast("Uploading Image...");
+                    getFragmentManager().popBackStack();
+                }else desc.setError("Description can't be null");
             }
         });
 

@@ -121,6 +121,7 @@ public class SearchFragment extends Fragment {
 //                Log.e("User Id: ", ids.get(i));
                 ProfileViewFragment.id = ids.get(i);
                 FragmentManager fm = getFragmentManager();
+                fm.beginTransaction().replace(R.id.container, new HomeFragment()).commit();
                 fm.beginTransaction().replace(R.id.container, new ProfileViewFragment()).addToBackStack(null).commit();
             }
         });

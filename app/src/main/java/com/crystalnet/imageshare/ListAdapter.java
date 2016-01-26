@@ -73,7 +73,7 @@ public class ListAdapter extends ArrayAdapter {
             public void onClick(View v) {
                 Post post = (Post) getItem(position);
                 ImagePreviewFragment.post=post;
-                ((FragmentActivity) Utilities.context).getFragmentManager().beginTransaction()
+                ((FragmentActivity) getContext()).getFragmentManager().beginTransaction()
                         .replace(R.id.container, new ImagePreviewFragment()).addToBackStack(null).commit();
 
             }
