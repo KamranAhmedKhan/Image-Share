@@ -4,8 +4,11 @@ import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.util.Log;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -19,6 +22,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.crystalnet.imageshare.Fragments.EditProfileFragment;
 import com.crystalnet.imageshare.Fragments.HomeFragment;
 import com.crystalnet.imageshare.Fragments.NewPostFragment;
 import com.crystalnet.imageshare.Fragments.SearchFragment;
@@ -28,6 +32,7 @@ import com.crystalnet.imageshare.Model.User;
 import com.crystalnet.imageshare.R;
 import com.crystalnet.imageshare.ServiceListener;
 import com.crystalnet.imageshare.Utils.Utilities;
+import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -78,6 +83,10 @@ public class MainActivity extends AppCompatActivity
 
     private void toolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        SpannableString title = new SpannableString(getResources().getString(R.string.app_name));
+        title.setSpan(Typeface.createFromAsset(getAssets(), "billabong.ttf"), 0, title.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        toolbar.setTitle(title);
         setSupportActionBar(toolbar);
         toolbar.setLogo(R.mipmap.ic_launcher);
 
@@ -96,6 +105,9 @@ public class MainActivity extends AppCompatActivity
         d_nameTextView = (TextView) headerView.findViewById(R.id.d_nameTextView);
         d_emailTextView = (TextView) headerView.findViewById(R.id.d_emailTextView);
         d_detailsTextView = (TextView) headerView.findViewById(R.id.d_detailsTextView);
+
+        Firebase refresh = FirebaseHandler.getInstance().getLoginedUserNode();
+        refresh.keepSynced(true);
     }
 
     @Override
@@ -137,8 +149,8 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.home) {
-            getFragmentManager().beginTransaction().replace(R.id.container, new HomeFragment()).commit();
+        if (id == R.id.edit) {
+            getFragmentManager().beginTransaction().replace(R.id.container, new EditProfileFragment()).addToBackStack(null).commit();
         }else if (id == R.id.newPost) {
             getFragmentManager().beginTransaction().replace(R.id.container, new NewPostFragment()).addToBackStack(null).commit();
         }else if (id == R.id.addContact) {
