@@ -48,6 +48,7 @@ import com.crystalnet.imageshare.Model.User;
 import com.crystalnet.imageshare.R;
 import com.crystalnet.imageshare.ServiceListener;
 import com.crystalnet.imageshare.Utils.Utilities;
+import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 
 import java.io.BufferedReader;
@@ -77,7 +78,8 @@ public class HomeFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private int PICK_IMAGE = 1;Uri outputFileUri;
+    private int PICK_IMAGE = 1;
+    Uri outputFileUri;
 
 
     /**
@@ -115,7 +117,8 @@ public class HomeFragment extends Fragment {
     ArrayList<Post> list;
     ListView listView;
     ListAdapter adapter;
-    String result;Map uploadResult;
+    String result;
+    Map uploadResult;
     User user;
 
     @Override
@@ -123,10 +126,14 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         V = inflater.inflate(R.layout.fragment_home, container, false);
+        try {
 
-        initWidgets(V);
-
+            initWidgets(V);
+        } catch (NullPointerException e) {
+            Utilities.errorToast("Fetching!");
+        }
         FloatingActionButton fab = (FloatingActionButton) V.findViewById(R.id.fab);
+        fab.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -145,13 +152,13 @@ public class HomeFragment extends Fragment {
     }
 
 
-
-
     private void initWidgets(View v) {
         listView = (ListView) v.findViewById(R.id.listView);
         list = new ArrayList<Post>();
         adapter = new ListAdapter(getActivity(), 0, list);
         listView.setAdapter(adapter);
+        Firebase refresh = FirebaseHandler.getInstance().getLoginedUserNode();
+        refresh.keepSynced(true);
 
 
         FirebaseHandler.getInstance().getPosts(new ServiceListener<Post, FirebaseError>() {
@@ -169,7 +176,7 @@ public class HomeFragment extends Fragment {
 
     }
 
-    private void listViewListener(){
+    private void listViewListener() {
 
     }
 }

@@ -52,6 +52,7 @@ public class Async extends AsyncTask<String, Void, HashMap<String, Object>> {
         } catch (Exception e) {
 
         }
+try {
 
         FirebaseHandler.getInstance().getLoginedUser(new ServiceListener<User,FirebaseError>() {
             @Override
@@ -111,6 +112,8 @@ public class Async extends AsyncTask<String, Void, HashMap<String, Object>> {
                 Utilities.errorToast(firebaseError.toString());
             }
         });
-
+} catch (NullPointerException e) {
+    Utilities.errorToast("Check your Network Connection!");
+}
     }
 }

@@ -2,6 +2,7 @@ package com.crystalnet.imageshare.Utils;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -22,6 +23,8 @@ import com.squareup.picasso.Picasso;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by root on 05/01/16.
@@ -118,4 +121,21 @@ public class Utilities {
         return df.format(dateobj);
     }
 
+    public static void ProgressBar(int time){
+        final ProgressDialog dialog = new ProgressDialog(context);
+//        dialog.setTitle("Loading...");
+        dialog.setMessage("Please wait....");
+        dialog.setIndeterminate(true);
+        dialog.setCancelable(false);
+        dialog.show();
+
+        long delayInMillis = time*1000;
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                dialog.dismiss();
+            }
+        }, delayInMillis);
+    }
 }

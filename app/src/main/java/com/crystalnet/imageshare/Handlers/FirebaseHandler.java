@@ -80,29 +80,33 @@ public class FirebaseHandler {
     }
 
     public void getLoginedUser(final ServiceListener<User, FirebaseError> listener) {
-        if (user == null) {
-            FirebaseHandler.firebaseRef.child("Users")
-                    .child(authData.getUid())
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            Log.e("datasnapshot User: ", dataSnapshot.toString());
+        try {
+            if (user == null) {
+                FirebaseHandler.firebaseRef.child("Users")
+                        .child(authData.getUid())
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Log.e("datasnapshot User: ", dataSnapshot.toString());
 
-                            user = dataSnapshot.getValue(User.class);
+                                user = dataSnapshot.getValue(User.class);
 
-                            Log.e("datasnapshot User: ", "Name: " + user.getName() +
-                                    ", Email: " + user.getEmail() + ", Image: " + user.getImage());
-                            listener.success(user);
-                        }
+                                Log.e("datasnapshot User: ", "Name: " + user.getName() +
+                                        ", Email: " + user.getEmail() + ", Image: " + user.getImage());
+                                listener.success(user);
+                            }
 
-                        @Override
-                        public void onCancelled(FirebaseError firebaseError) {
-                            Utilities.errorToast(firebaseError.toString());
-                            listener.error(firebaseError);
-                        }
-                    });
-        } else {
-            listener.success(user);
+                            @Override
+                            public void onCancelled(FirebaseError firebaseError) {
+                                Utilities.errorToast(firebaseError.toString());
+                                listener.error(firebaseError);
+                            }
+                        });
+            } else {
+                listener.success(user);
+            }
+        } catch (NullPointerException e) {
+            Utilities.errorToast("Check your Network Connection!");
         }
     }
 
@@ -176,11 +180,11 @@ public class FirebaseHandler {
                         }
                     }
 
-        @Override
-        public void onCancelled (FirebaseError firebaseError){
-            Utilities.errorToast(firebaseError.toString());
-            listener.error(firebaseError);
-        }
-    });
-}
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+                        Utilities.errorToast(firebaseError.toString());
+                        listener.error(firebaseError);
+                    }
+                });
+    }
 }

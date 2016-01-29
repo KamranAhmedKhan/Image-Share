@@ -5,7 +5,6 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -23,7 +22,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.crystalnet.imageshare.Fragments.EditProfileFragment;
-import com.crystalnet.imageshare.Fragments.HomeFragment;
 import com.crystalnet.imageshare.Fragments.NewPostFragment;
 import com.crystalnet.imageshare.Fragments.SearchFragment;
 import com.crystalnet.imageshare.Fragments.SigninFragment;
@@ -32,11 +30,7 @@ import com.crystalnet.imageshare.Model.User;
 import com.crystalnet.imageshare.R;
 import com.crystalnet.imageshare.ServiceListener;
 import com.crystalnet.imageshare.Utils.Utilities;
-import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -88,7 +82,7 @@ public class MainActivity extends AppCompatActivity
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         toolbar.setTitle(title);
         setSupportActionBar(toolbar);
-        toolbar.setLogo(R.mipmap.ic_launcher);
+//        toolbar.setLogo(R.drawable.airplay_icon);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -106,8 +100,6 @@ public class MainActivity extends AppCompatActivity
         d_emailTextView = (TextView) headerView.findViewById(R.id.d_emailTextView);
         d_detailsTextView = (TextView) headerView.findViewById(R.id.d_detailsTextView);
 
-        Firebase refresh = FirebaseHandler.getInstance().getLoginedUserNode();
-        refresh.keepSynced(true);
     }
 
     @Override
@@ -181,6 +173,7 @@ public class MainActivity extends AppCompatActivity
                 .setPositiveButton("Logout", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         FirebaseHandler.firebaseRef.unauth();
+                        Log.e("Logout: ","User is logged out");
                         getFragmentManager().beginTransaction()
                                 .replace(R.id.container, new SigninFragment())
                                 .commit();

@@ -57,17 +57,20 @@ public class NewPostFragment extends Fragment {
 
     private void PublishButton() {
 //        ((BitmapDrawable) (pickImageView.getDrawable())).getBitmap();
-        publish.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!desc.getText().toString().matches("")) {
-                    Async async = new Async();
-                    async.execute(picturePath);
-                    Utilities.successToast("Uploading Image...");
-                    getFragmentManager().popBackStack();
-                }else desc.setError("Description can't be null");
-            }
-        });
+
+            publish.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (!desc.getText().toString().matches("")) {
+                        if(picturePath!=null) {
+                        Async async = new Async();
+                        async.execute(picturePath);
+                        Utilities.successToast("Uploading Image...");
+                        getFragmentManager().popBackStack();}else desc.setError("Please select image");
+                    } else desc.setError("Description can't be null");
+                }
+            });
+
 
 
         /*final Cloudinary cloudinary = new Cloudinary("cloudinary://573468729839527:k8qo3_8Ex_kPh-M9qkB8BJ3BxyQ@kamran");

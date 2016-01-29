@@ -109,7 +109,8 @@ public class SigninFragment extends Fragment {
                             password.setError("Field must be filled");
                         } else {
                             //Login
-                            FirebaseHandler.getInstance().firebaseLogin(email.getText().toString(), password.getText().toString(), new ServiceListener<AuthData, FirebaseError>() {
+                            FirebaseHandler.getInstance().firebaseLogin(email.getText().toString(), password.getText().toString(),
+                                    new ServiceListener<AuthData, FirebaseError>() {
                                 @Override
                                 public void success(AuthData obj) {
                                     getFragmentManager().beginTransaction()
