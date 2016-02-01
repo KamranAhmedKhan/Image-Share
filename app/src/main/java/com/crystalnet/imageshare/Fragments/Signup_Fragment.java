@@ -14,7 +14,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crystalnet.imageshare.Activities.MainActivity;
+import com.crystalnet.imageshare.Handlers.FirebaseHandler;
 import com.crystalnet.imageshare.R;
+import com.crystalnet.imageshare.ServiceListener;
 import com.crystalnet.imageshare.Utils.Utilities;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
@@ -48,88 +50,93 @@ public class Signup_Fragment extends Fragment {
     TextView textView;
     Context c;
     View Root;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         Root = inflater.inflate(R.layout.fragment_signup, container, false);
-        Firebase.setAndroidContext(getActivity());
-        firebase = new Firebase("https://fb-todolist.firebaseio.com/");
-        firebase_user = firebase.child("Users");
-        name = (EditText)Root.findViewById(R.id.signup_name);
-        email = (EditText)Root.findViewById(R.id.signup_email);
-        password = (EditText)Root.findViewById(R.id.signup_password);
-        sign_up = (Button)Root.findViewById(R.id.email_sign_up_button);
-        textView = (TextView)Root.findViewById(R.id.textView);
-        c = getActivity();
 
+        init(Root);
         signup();
         signin();
         return Root;
     }
 
+    private void init(View Root) {
+        firebase = FirebaseHandler.firebaseRef;
+        firebase_user = firebase.child("Users");
+        name = (EditText) Root.findViewById(R.id.signup_name);
+        email = (EditText) Root.findViewById(R.id.signup_email);
+        password = (EditText) Root.findViewById(R.id.signup_password);
+        sign_up = (Button) Root.findViewById(R.id.email_sign_up_button);
+        textView = (TextView) Root.findViewById(R.id.textView);
+        c = getActivity();
+    }
 
-    private void signup(){
+
+    private void signup() {
         sign_up.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
 
-                if(email.getText().toString().matches("")) {
+                if (email.getText().toString().matches("")) {
                     email.setError("Field must be filled");
-                }else if(password.getText().toString().matches("")){
+                } else if (password.getText().toString().matches("")) {
                     password.setError("Field must be filled");
-                }else {
-                //SignUp
-                firebase.createUser(email.getText().toString(),password.getText().toString(),  new Firebase.ValueResultHandler<Map<String, Object>>() {
-                    @Override
-                    public void onSuccess(Map<String, Object> result) {
-                    Utilities.successToast("Wellcome!");
-                    textView.setText("Successfully created user account with uid: " + result.get("uid"));
-                        firebase.child("UsersList").child(result.get("uid").toString()).setValue(email.getText().toString());
-
-                    //Login
-                    firebase.authWithPassword(email.getText().toString(), password.getText().toString(), new Firebase.AuthResultHandler() {
+                } else {
+                    //SignUp
+                    FirebaseHandler.getInstance().firebaseCreateUser(email.getText().toString(), password.getText().toString(), name.getText().toString()
+                            , new ServiceListener<Map<String, Object>, FirebaseError>() {
                         @Override
-                        public void onAuthenticated(AuthData authData) {
-                            Map<String,String> newuser = new HashMap<String, String>();
-                            newuser.put("email",authData.getProviderData().get("email").toString());
-                            newuser.put("provider",authData.getProvider());
-                            newuser.put("name",name.getText().toString());
-                            newuser.put("image","default image");
-                            newuser.put("about", "No information provided Yet");
-                            newuser.put("age", "No information provided Yet");
-                            newuser.put("location", "No information provided Yet");
-                            firebase_user.child(authData.getUid()).setValue(newuser);
+                        public void success(Map<String, Object> obj) {
+                            textView.setText("Successfully created user account with uid: " + obj.get("uid"));
+                            firebase.child("UsersList").child(obj.get("uid").toString()).setValue(email.getText().toString());
 
-                            //If login successfull GOTO EditProfile Fragment......
-                            getFragmentManager().beginTransaction()
-                                    .replace(R.id.container,new HomeFragment());
-                            getFragmentManager().beginTransaction()
-                                    .replace(R.id.container, new EditProfileFragment()).addToBackStack("Home")
-                                    .commit();
+                            //Login
+                            firebase.authWithPassword(email.getText().toString(), password.getText().toString(), new Firebase.AuthResultHandler() {
+                                @Override
+                                public void onAuthenticated(AuthData authData) {
+                                    Map<String, String> newuser = new HashMap<String, String>();
+                                    newuser.put("email", authData.getProviderData().get("email").toString());
+                                    newuser.put("provider", authData.getProvider());
+                                    newuser.put("name", name.getText().toString());
+                                    newuser.put("image", "default image");
+                                    newuser.put("about", "No information provided Yet");
+                                    newuser.put("age", "No information provided Yet");
+                                    newuser.put("location", "No information provided Yet");
+                                    firebase_user.child(authData.getUid()).setValue(newuser);
+
+                                    //If login successfull GOTO EditProfile Fragment......
+                                    getFragmentManager().beginTransaction()
+                                            .replace(R.id.container, new HomeFragment()).commit();
+                                    getFragmentManager().beginTransaction()
+                                            .replace(R.id.container, new EditProfileFragment()).addToBackStack("Home")
+                                            .commit();
+                                }
+
+                                @Override
+                                public void onAuthenticationError(FirebaseError firebaseError) {
+                                    // there was an error in login
+                                    textView.setText(firebaseError.toString());
+                                }
+                            });
                         }
+
                         @Override
-                        public void onAuthenticationError(FirebaseError firebaseError) {
-                            // there was an error in login
-                            textView.setText(firebaseError.toString());
+                        public void error(FirebaseError obj) {
+                            textView.setText(obj.toString());
                         }
                     });
                 }
-                @Override
-                public void onError(FirebaseError firebaseError) {
-                    // there was an error in signup
-                    textView.setText(firebaseError.toString());
-                }
-            });
-        }
             }
         });
     }
 
     //Create Account Clickable Text
-    private void signin(){
-        TextView signup_TextView = (TextView)Root.findViewById(R.id.signup_TextView);
+    private void signin() {
+        TextView signup_TextView = (TextView) Root.findViewById(R.id.signup_TextView);
         signup_TextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

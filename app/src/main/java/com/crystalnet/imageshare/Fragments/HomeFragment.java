@@ -133,7 +133,6 @@ public class HomeFragment extends Fragment {
             Utilities.errorToast("Fetching!");
         }
         FloatingActionButton fab = (FloatingActionButton) V.findViewById(R.id.fab);
-        fab.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -157,8 +156,8 @@ public class HomeFragment extends Fragment {
         list = new ArrayList<Post>();
         adapter = new ListAdapter(getActivity(), 0, list);
         listView.setAdapter(adapter);
-        Firebase refresh = FirebaseHandler.getInstance().getLoginedUserNode();
-        refresh.keepSynced(true);
+//        Firebase refresh = FirebaseHandler.getInstance().getLoginedUserNode();
+//        refresh.keepSynced(true);
 
 
         FirebaseHandler.getInstance().getPosts(new ServiceListener<Post, FirebaseError>() {

@@ -15,6 +15,8 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
+import java.util.Map;
+
 import javax.security.auth.callback.Callback;
 
 
@@ -41,6 +43,7 @@ public class FirebaseHandler {
         Firebase.setAndroidContext(MainActivity.context);
         Firebase.getDefaultConfig().setPersistenceEnabled(true);
         firebaseRef = new Firebase("https://fb-todolist.firebaseio.com/");
+        firebaseRef.keepSynced(true);
         authData = firebaseRef.getAuth();
     }
 
@@ -74,6 +77,21 @@ public class FirebaseHandler {
             @Override
             public void onAuthenticationError(FirebaseError firebaseError) {
                 // there was an error in login
+                listener.error(firebaseError);
+            }
+        });
+    }
+
+    public void firebaseCreateUser(String email,String password, String name, final ServiceListener<Map<String,Object>,FirebaseError> listener){
+        firebaseRef.createUser(email,password,  new Firebase.ValueResultHandler<Map<String, Object>>() {
+            @Override
+            public void onSuccess(Map<String, Object> result) {
+                Utilities.successToast("Wellcome!");
+                listener.success(result);
+            }
+
+            @Override
+            public void onError(FirebaseError firebaseError) {
                 listener.error(firebaseError);
             }
         });
